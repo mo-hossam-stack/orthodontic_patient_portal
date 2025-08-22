@@ -32,7 +32,7 @@ class PaymentAdmin(admin.ModelAdmin):
             'fields': ('remaining_amount', 'last_update'),
             'classes': ('collapse',)
         }),
-    )
+    ) 
 
 
 @admin.register(XRay)
