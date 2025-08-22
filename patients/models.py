@@ -36,3 +36,14 @@ class XRay(models.Model):
 
     def __str__(self) -> str:
         return f"{self.patient.name} - X-ray {self.id}"
+    
+class Visit(models.Model):
+    id = models.AutoField(primary_key=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='visits')
+    visit_date = models.DateField()
+    notes = models.TextField(blank=True)
+    xray = models.ForeignKey(XRay, on_delete=models.SET_NULL, null=True, blank=True, related_name='visits')
+    payment_this_visit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self) -> str:
+        return f"{self.patient.name} - Visit {self.visit_date}"
