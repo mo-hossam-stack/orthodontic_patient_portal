@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Profile - {{ patient.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Dental PMS</a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light" href="{% url 'patient_edit' patient.pk %}">
+                    <i class="bi bi-pencil"></i> Edit Patient
+                </a>
+                <a class="btn btn-outline-light" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        <a href="/" class="btn btn-link">← Back to Dashboard</a>
+        
+        <!-- Success Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- Patient Info Card -->
+            <div class="col-12 col-lg-4">
+                <div class="card">
+                    {% if patient.photo %}
+                        <img src="{{ patient.photo.url }}" class="card-img-top" alt="{{ patient.name }}" style="object-fit:cover;height:250px;">
+                    {% else %}
+                        <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:250px">
+                            <i class="bi bi-person text-white" style="font-size: 4rem;"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="h5">{{ patient.name }}</h3>
+                        <ul class="list-unstyled small text-muted">
+                            <li><i class="bi bi-telephone"></i> {{ patient.phone_number }}</li>
+                            <li><i class="bi bi-calendar"></i> Joined: {{ patient.join_date|date:"M d, Y" }}</li>
+                            {% if patient.notes %}
+                                <li><i class="bi bi-sticky"></i> {{ patient.notes|truncatewords:20 }}</li>
+                            {% endif %}
+                        </ul>
+                        
+                        <!-- Financial Summary -->
+                        <div class="mt-3 p-3 bg-light rounded">
+                            <h6 class="mb-2">Financial Summary</h6>
+                            <div class="d-flex justify-content-between">
+                                <span>Total Owed:</span>
+                                <span class="text-danger fw-bold">${{ total_owed|floatformat:2 }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Total Paid:</span>
+                                <span class="text-success fw-bold">${{ total_paid|floatformat:2 }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="mt-3 d-grid gap-2">
+                            <a class="btn btn-success btn-sm" href="{% url 'patient_visit_create' patient.pk %}">
+                                <i class="bi bi-calendar-plus"></i> Add Visit
+                            </a>
+                            <a class="btn btn-info btn-sm" href="{% url 'patient_xray_create' patient.pk %}">
+                                <i class="bi bi-image"></i> Add X-Ray
+                            </a>
+                            <a class="btn btn-warning btn-sm" href="{% url 'patient_payment_create' patient.pk %}">
+                                <i class="bi bi-credit-card"></i> Add Payment
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Tabs -->
+            <div class="col-12 col-lg-8">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visits" type="button" role="tab">
+                            <i class="bi bi-calendar-check"></i> Visits ({{ visits.count }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="payments-tab" data-bs-toggle="tab" data-bs-target="#payments" type="button" role="tab">
+                            <i class="bi bi-credit-card"></i> Payments ({{ payments.count }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="xray-tab" data-bs-toggle="tab" data-bs-target="#xray" type="button" role="tab">
+                            <i class="bi bi-image"></i> X-Rays ({{ xrays.count }})
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content p-3 bg-white border border-top-0" id="myTabContent">
+                    <!-- Visits Tab -->
+                    <div class="tab-pane fade show active" id="visits" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Patient Visits</h5>
+                            <a class="btn btn-success btn-sm" href="{% url 'patient_visit_create' patient.pk %}">
+                                <i class="bi bi-plus"></i> Add Visit
+                            </a>
+                        </div>
+                        {% if visits %}
+                            <div class="list-group list-group-flush">
+                                {% for visit in visits %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ visit.visit_date|date:"M d, Y" }}</h6>
+                                            {% if visit.notes %}
+                                                <p class="mb-1">{{ visit.notes|linebreaks }}</p>
+                                            {% endif %}
+                                            {% if visit.payment_this_visit > 0 %}
+                                                <span class="badge bg-success">Payment: ${{ visit.payment_this_visit|floatformat:2 }}</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if visit.xray %}
+                                            <span class="badge bg-info">Has X-Ray</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">No visits recorded yet.</p>
+                                <a class="btn btn-primary" href="{% url 'patient_visit_create' patient.pk %}">Record First Visit</a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Payments Tab -->
+                    <div class="tab-pane fade" id="payments" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Payment Records</h5>
+                            <a class="btn btn-warning btn-sm" href="{% url 'patient_payment_create' patient.pk %}">
+                                <i class="bi bi-plus"></i> Add Payment
+                            </a>
+                        </div>
+                        {% if payments %}
+                            <div class="list-group list-group-flush">
+                                {% for payment in payments %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">Payment #{{ payment.id }}</h6>
+                                            <div class="row text-muted small">
+                                                <div class="col-6">Total: ${{ payment.total_amount|floatformat:2 }}</div>
+                                                <div class="col-6">Paid: ${{ payment.paid_amount|floatformat:2 }}</div>
+                                            </div>
+                                            <div class="mt-1">
+                                                {% if payment.remaining_amount > 0 %}
+                                                    <span class="badge bg-warning">Remaining: ${{ payment.remaining_amount|floatformat:2 }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">Paid in Full</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">{{ payment.last_update|date:"M d, Y" }}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-credit-card text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">No payment records yet.</p>
+                                <a class="btn btn-primary" href="{% url 'patient_payment_create' patient.pk %}">Record First Payment</a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- X-Rays Tab -->
+                    <div class="tab-pane fade" id="xray" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">X-Ray Images</h5>
+                            <a class="btn btn-info btn-sm" href="{% url 'patient_xray_create' patient.pk %}">
+                                <i class="bi bi-plus"></i> Add X-Ray
+                            </a>
+                        </div>
+                        {% if xrays %}
+                            <div class="row g-3">
+                                {% for xray in xrays %}
+                                <div class="col-6 col-md-4">
+                                    <div class="card">
+                                        <img src="{{ xray.image.url }}" class="card-img-top" alt="X-Ray {{ xray.id }}" style="object-fit:cover;height:180px;">
+                                        <div class="card-body small">
+                                            <div class="text-muted">Added: {{ xray.date_added|date:"M d, Y" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">No X-ray images uploaded yet.</p>
+                                <a class="btn btn-primary" href="{% url 'patient_xray_create' patient.pk %}">Upload First X-Ray</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:'Add Visit' }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Dental PMS</a>
+            <div class="ms-auto d-flex gap-2">
+                <a class="btn btn-outline-light" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h4 m-0">{{ title|default:'Add New Visit' }}</h1>
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Patient *</label>
+                            {{ form.patient }}
+                            {% if form.patient.errors %}
+                                <div class="text-danger small">{{ form.patient.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Visit Date *</label>
+                            {{ form.visit_date }}
+                            {% if form.visit_date.errors %}
+                                <div class="text-danger small">{{ form.visit_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">X-Ray (Optional)</label>
+                            {{ form.xray }}
+                            {% if form.xray.errors %}
+                                <div class="text-danger small">{{ form.xray.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Link to an existing X-ray if applicable</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Payment This Visit</label>
+                            {{ form.payment_this_visit }}
+                            {% if form.payment_this_visit.errors %}
+                                <div class="text-danger small">{{ form.payment_this_visit.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Payment amount for this visit (optional)</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Visit Notes</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Notes about the visit, treatment, or observations</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 d-flex gap-2">
+                        <button class="btn btn-success" type="submit">
+                            <i class="bi bi-check-circle"></i> Save Visit
+                        </button>
+                        <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
