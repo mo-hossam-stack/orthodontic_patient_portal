@@ -145,3 +145,15 @@ def xray_create(request, patient_pk: int = None):
         'form': form,
         'title': 'Add New X-Ray',
     })
+
+def patient_delete(request, pk: int):
+    patient = get_object_or_404(Patient, pk=pk)
+    if request.method == 'POST':
+        patient_name = patient.name
+        patient.delete()
+        messages.success(request, f'Patient "{patient_name}" has been deleted sucessfully')
+        return redirect('dashboard')
+    
+    return render(request, 'patients/patient_delete_confirm.html', {
+        'patient': patient,
+    })  

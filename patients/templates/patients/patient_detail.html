@@ -16,6 +16,9 @@
                 <a class="btn btn-outline-light" href="{% url 'patient_edit' patient.pk %}">
                     <i class="bi bi-pencil"></i> Edit Patient
                 </a>
+                <a class="btn btn-outline-danger" href="{% url 'patient_delete' patient.pk %}">
+                    <i class="bi bi-trash"></i> Delete Patient
+                </a>
                 <a class="btn btn-outline-light" href="{% url 'logout' %}">
                     <i class="bi bi-box-arrow-right"></i> Logout
                 </a>
