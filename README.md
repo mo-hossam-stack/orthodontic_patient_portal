@@ -2,6 +2,10 @@
 
 A comprehensive web-based dental practice management system built with Django that helps dental professionals manage patients, appointments, payments, and medical records efficiently.
 
+## 📣 Check Out My LinkedIn Post
+
+[🔹 View Video demo on LinkedIn](https://www.linkedin.com/posts/mohamed-hossam-dev_alx-backenddevelopment-capstoneproject-activity-7367923803651203072-bkBi?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFjEZA8B-prD-yP6Bz7y8xP7CBtDVirxijw)
+
 ## ✨ Features
 
 ### 🏥 Patient Management
