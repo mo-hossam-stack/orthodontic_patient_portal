@@ -18,5 +18,5 @@ db.sqlite3
 
 .DS_Store
 Thumbs.db
-
+.opencode/
 .env  
