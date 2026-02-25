@@ -67,19 +67,18 @@ cd orthodontic_patient_portal
 ### 2. Create Virtual Environment
 
 ```bash
-# On Windows
-python -m venv env
-env\Scripts\activate
+# Install uv if not already installed
+pip install uv
 
-# On macOS/Linux
-python3 -m venv env
-source env/bin/activate
+# Create and activate virtual environment
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
 ### 3. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 ### 4. Environment Configuration
