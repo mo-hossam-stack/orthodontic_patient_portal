@@ -20,3 +20,7 @@ new_phases.md
 Thumbs.db
 .opencode/
 .env  
+.agent/
+.agents/
+.tmp/
+skills-lock.json

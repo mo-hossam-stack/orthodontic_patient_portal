@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 m-0">{{ title }}</h1>
+        <a href="{% url 'appointment_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Appointments
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Patient *</label>
+                        {{ form.patient }}
+                        {% if form.patient.errors %}
+                            <div class="text-danger small">{{ form.patient.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Status *</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="text-danger small">{{ form.status.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Start Time *</label>
+                        {{ form.datetime_start }}
+                        {% if form.datetime_start.errors %}
+                            <div class="text-danger small">{{ form.datetime_start.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">End Time *</label>
+                        {{ form.datetime_end }}
+                        {% if form.datetime_end.errors %}
+                            <div class="text-danger small">{{ form.datetime_end.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Notes</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-success" type="submit">
+                        <i class="bi bi-check-circle"></i> Save Appointment
+                    </button>
+                    <a href="{% url 'appointment_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Cancel Appointment{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 m-0">Cancel Appointment</h1>
+        <a href="{% url 'appointment_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Appointments
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <p>Are you sure you want to cancel this appointment?</p>
+            
+            <div class="alert alert-secondary">
+                <strong>Patient:</strong> {{ appointment.patient.name }}<br>
+                <strong>Date & Time:</strong> {{ appointment.datetime_start|date:"M d, Y h:i A" }}<br>
+                <strong>Status:</strong> {{ appointment.get_status_display }}
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-danger" type="submit">
+                        <i class="bi bi-trash"></i> Cancel Appointment
+                    </button>
+                    <a href="{% url 'appointment_list' %}" class="btn btn-outline-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

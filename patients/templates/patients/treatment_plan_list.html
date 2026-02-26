@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Treatment Plans{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 m-0">Treatment Plans</h1>
+        <div>
+            <a href="{% url 'treatment_plan_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create Treatment Plan
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if treatment_plans %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Start Date</th>
+                                <th>Expected End</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for plan in treatment_plans %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'patient_detail' plan.patient.pk %}">
+                                            {{ plan.patient.name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ plan.title }}</td>
+                                    <td>
+                                        {% if plan.status == 'planned' %}
+                                            <span class="badge bg-info">Planned</span>
+                                        {% elif plan.status == 'in_progress' %}
+                                            <span class="badge bg-primary">In Progress</span>
+                                        {% elif plan.status == 'completed' %}
+                                            <span class="badge bg-success">Completed</span>
+                                        {% elif plan.status == 'cancelled' %}
+                                            <span class="badge bg-secondary">Cancelled</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ plan.start_date|default:"-" }}</td>
+                                    <td>{{ plan.expected_end_date|default:"-" }}</td>
+                                    <td>
+                                        <a href="{% url 'treatment_plan_edit' plan.pk %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+                                        <a href="{% url 'treatment_plan_delete' plan.pk %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center py-4">No treatment plans created yet.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

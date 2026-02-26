@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Visit{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 m-0">Delete Visit</h1>
+        <a href="{% url 'patient_detail' visit.patient.pk %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Patient
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <p>Are you sure you want to delete this visit record?</p>
+            
+            <div class="alert alert-secondary">
+                <strong>Patient:</strong> {{ visit.patient.name }}<br>
+                <strong>Date:</strong> {{ visit.visit_date }}<br>
+                <strong>Payment This Visit:</strong> ${{ visit.payment_this_visit }}
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-danger" type="submit">
+                        <i class="bi bi-trash"></i> Delete Visit
+                    </button>
+                    <a href="{% url 'patient_detail' visit.patient.pk %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

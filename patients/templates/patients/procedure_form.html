@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 m-0">{{ title }}</h1>
+        <a href="{% url 'treatment_plan_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Treatment Plans
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Treatment Plan *</label>
+                        {{ form.treatment_plan }}
+                        {% if form.treatment_plan.errors %}
+                            <div class="text-danger small">{{ form.treatment_plan.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Procedure Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Date Performed</label>
+                        {{ form.date_performed }}
+                        {% if form.date_performed.errors %}
+                            <div class="text-danger small">{{ form.date_performed.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Cost</label>
+                        {{ form.cost }}
+                        {% if form.cost.errors %}
+                            <div class="text-danger small">{{ form.cost.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Notes</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-success" type="submit">
+                        <i class="bi bi-check-circle"></i> Save Procedure
+                    </button>
+                    <a href="{% url 'treatment_plan_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Payment{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 m-0">Delete Payment</h1>
+        <a href="{% url 'patient_detail' payment.patient.pk %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Patient
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <p>Are you sure you want to delete this payment record?</p>
+            
+            <div class="alert alert-secondary">
+                <strong>Patient:</strong> {{ payment.patient.name }}<br>
+                <strong>Total Amount:</strong> ${{ payment.total_amount }}<br>
+                <strong>Paid Amount:</strong> ${{ payment.paid_amount }}<br>
+                <strong>Remaining:</strong> ${{ payment.remaining_amount }}
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-danger" type="submit">
+                        <i class="bi bi-trash"></i> Delete Payment
+                    </button>
+                    <a href="{% url 'patient_detail' payment.patient.pk %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

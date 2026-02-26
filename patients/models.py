@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.conf import settings
 
 
 class Patient(models.Model):
@@ -17,7 +18,9 @@ class Patient(models.Model):
 
 class Payment(models.Model):
     id = models.AutoField(primary_key=True)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="payments")
+    patient = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, related_name="payments"
+    )
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     remaining_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -64,6 +67,78 @@ class Visit(models.Model):
 
     def __str__(self) -> str:
         return f"{self.patient.name} - Visit {self.visit_date}"
+
+
+class Appointment(models.Model):
+    """Model for scheduling patient appointments."""
+
+    class Status(models.TextChoices):
+        SCHEDULED = "scheduled", "Scheduled"
+        COMPLETED = "completed", "Completed"
+        CANCELLED = "cancelled", "Cancelled"
+        NO_SHOW = "no_show", "No Show"
+
+    patient = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, related_name="appointments"
+    )
+    datetime_start = models.DateTimeField()
+    datetime_end = models.DateTimeField()
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.SCHEDULED
+    )
+    notes = models.TextField(blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="appointments",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.patient.name} - {self.datetime_start}"
+
+
+class TreatmentPlan(models.Model):
+    """Model for patient treatment plans."""
+
+    class Status(models.TextChoices):
+        PLANNED = "planned", "Planned"
+        IN_PROGRESS = "in_progress", "In Progress"
+        COMPLETED = "completed", "Completed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    patient = models.ForeignKey(
+        Patient, on_delete=models.CASCADE, related_name="treatment_plans"
+    )
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.PLANNED
+    )
+    start_date = models.DateField(null=True, blank=True)
+    expected_end_date = models.DateField(null=True, blank=True)
+    actual_end_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.patient.name} - {self.title}"
+
+
+class Procedure(models.Model):
+
+    treatment_plan = models.ForeignKey(
+        TreatmentPlan, on_delete=models.CASCADE, related_name="procedures"
+    )
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    date_performed = models.DateField(null=True, blank=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    notes = models.TextField(blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.treatment_plan.title} - {self.name}"
 
 
 # Signal receivers to delete files when records are deleted

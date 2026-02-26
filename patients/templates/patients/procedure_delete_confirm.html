@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Procedure{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 m-0">Delete Procedure</h1>
+        <a href="{% url 'treatment_plan_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Treatment Plans
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <p>Are you sure you want to delete this procedure?</p>
+            
+            <div class="alert alert-secondary">
+                <strong>Treatment Plan:</strong> {{ procedure.treatment_plan.title }}<br>
+                <strong>Procedure:</strong> {{ procedure.name }}<br>
+                <strong>Date:</strong> {{ procedure.date_performed|default:"-" }}
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-danger" type="submit">
+                        <i class="bi bi-trash"></i> Delete Procedure
+                    </button>
+                    <a href="{% url 'treatment_plan_list' %}" class="btn btn-outline-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
