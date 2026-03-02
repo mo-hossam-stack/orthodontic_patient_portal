@@ -1,44 +1,39 @@
-# 🦷 Dental Practice Management System (DPMS)
+#  Clinic Management System (CMS)
 
 A comprehensive web-based dental practice management system built with Django that helps dental professionals manage patients, appointments, payments, and medical records efficiently.
+##  Features
 
-## 📣 Check Out My LinkedIn Post
-
-[🔹 View Video demo on LinkedIn](https://www.linkedin.com/posts/mohamed-hossam-dev_alx-backenddevelopment-capstoneproject-activity-7367923803651203072-bkBi?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFjEZA8B-prD-yP6Bz7y8xP7CBtDVirxijw)
-
-## ✨ Features
-
-### 🏥 Patient Management
+###  Patient Management
 - **Patient Registration**: Add new patients with personal information
 - **Patient Profiles**: Store patient photos, contact details, and medical notes
 - **Patient Search**: Quick access to patient records and history
 - **Patient History**: Track all patient interactions and treatments
 
-### 💰 Payment Management
+###  Payment Management
 - **Payment Tracking**: Monitor total treatment costs and payments
 - **Payment Records**: Keep detailed payment history for each patient
 - **Outstanding Balances**: Automatically calculate remaining amounts
 - **Payment Updates**: Real-time payment status tracking
 
-### 📋 Visit Management
+###  Visit Management
 - **Visit Scheduling**: Schedule and track patient visits
 - **Visit Notes**: Document treatment details and observations
 - **Visit History**: Complete visit timeline for each patient
 - **Treatment Records**: Link visits with payments and X-rays
 
-### 🩺 Medical Records
+###  Medical Records
 - **X-Ray Management**: Upload and store patient X-ray images
 - **Image Organization**: Automatic categorization of medical images
 - **Secure Storage**: Protected access to sensitive medical data
 - **Image Linking**: Connect X-rays with specific visits
 
-### 🔐 Security & Authentication
+###  Security & Authentication
 - **User Authentication**: Secure login/logout system
 - **Admin Panel**: Django admin interface for system management
 - **Data Protection**: Secure handling of patient information
 - **Access Control**: Role-based access to sensitive data
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Backend**: Django 5.2.5
 - **Database**: SQLite (development) / PostgreSQL (production)
@@ -47,7 +42,7 @@ A comprehensive web-based dental practice management system built with Django th
 - **Environment Management**: django-environ
 - **Authentication**: Django's built-in auth system
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before running this application, make sure you have the following installed:
 
@@ -55,7 +50,7 @@ Before running this application, make sure you have the following installed:
 - **pip** (Python package installer)
 - **Git** (for version control)
 
-## 🚀 Installation & Setup
+##  Installation & Setup
 
 ### 1. Clone the Repository
 
@@ -126,36 +121,9 @@ python manage.py runserver
 
 The application will be available at `http://127.0.0.1:8000/`
 
-## 📁 Project Structure
 
-```
-orthodontic_patient_portal/
-├── dental_management/          # Main Django project
-│   ├── __init__.py
-│   ├── settings.py            # Project settings
-│   ├── urls.py               # Main URL configuration
-│   ├── asgi.py
-│   └── wsgi.py
-├── patients/                  # Patients app
-│   ├── models.py             # Database models
-│   ├── views.py              # View logic
-│   ├── urls.py               # App URL patterns
-│   ├── forms.py              # Form definitions
-│   ├── admin.py              # Admin interface
-│   └── templates/            # HTML templates
-│       └── patients/
-├── media/                     # User uploaded files
-│   └── patients/
-│       ├── photos/           # Patient photos
-│       └── xrays/            # X-ray images
-├── templates/                 # Global templates
-├── manage.py                  # Django management script
-├── requirements.txt           # Python dependencies
-├── .env                      # Environment variables
-└── README.md                 # This file
-```
 
-## 🎯 Usage Guide
+##  Usage Guide
 
 ### Accessing the System
 
@@ -190,7 +158,7 @@ orthodontic_patient_portal/
 2. Images are automatically organized by patient
 3. Link X-rays to specific visits for better tracking
 
-## 🔧 Configuration
+##  Configuration
 
 ### Production Deployment
 
@@ -222,7 +190,7 @@ python manage.py collectstatic
 python manage.py dumpdata > backup.json
 ```
 
-## 🧪 Testing
+##  Testing
 
 Run the test suite:
 
@@ -230,7 +198,7 @@ Run the test suite:
 python manage.py test
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -239,7 +207,7 @@ python manage.py test
 5. Open a Pull Request
 
 
-## 🆘 Support
+##  Support
 
 If you encounter any issues or have questions:
 
@@ -248,12 +216,7 @@ If you encounter any issues or have questions:
 3. Contact the development team
 
 
-## 🙏 Acknowledgments
-
-- Django community for the excellent framework
-- Contributors and testers
-- Dental professionals for feedback and suggestions
 
 ---
 
-**Note**: This system is designed for dental practice management. Ensure compliance with local healthcare data protection regulations (HIPAA, GDPR, etc.) when deploying in production.
+**Note**: This system is designed for Clinic practice management. Ensure compliance with local healthcare data protection regulations (HIPAA, GDPR, etc.) when deploying in production.
