@@ -6,9 +6,15 @@
 {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h4 m-0">{{ title }}</h1>
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard
-        </a>
+        {% if patient %}
+            <a href="{% url 'patient_detail' patient.pk %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Patient
+            </a>
+        {% else %}
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        {% endif %}
     </div>
 
     <div class="card">
@@ -44,7 +50,11 @@
                     <button class="btn btn-success" type="submit">
                         <i class="bi bi-check-circle"></i> Upload X-Ray
                     </button>
-                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                    {% if patient %}
+                        <a href="{% url 'patient_detail' patient.pk %}" class="btn btn-outline-secondary">Cancel</a>
+                    {% else %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                    {% endif %}
                 </div>
             </form>
         </div>
