@@ -61,6 +61,12 @@ def patient_detail(request, pk: int):
     payments = Payment.objects.filter(patient=patient).order_by("-last_update")
     visits = Visit.objects.filter(patient=patient).order_by("-visit_date")
     xrays = XRay.objects.filter(patient=patient).order_by("-date_added")
+    appointments = Appointment.objects.filter(patient=patient).order_by(
+        "-datetime_start"
+    )
+    treatment_plans = TreatmentPlan.objects.filter(patient=patient).order_by(
+        "-created_at"
+    )
 
     # Calculate totals
     total_owed = payments.aggregate(total=Sum("remaining_amount"))["total"] or 0
@@ -74,6 +80,8 @@ def patient_detail(request, pk: int):
             "payments": payments,
             "visits": visits,
             "xrays": xrays,
+            "appointments": appointments,
+            "treatment_plans": treatment_plans,
             "total_owed": total_owed,
             "total_paid": total_paid,
         },
@@ -126,6 +134,9 @@ def patient_edit(request, pk: int):
 
 @login_required
 def payment_create(request, patient_pk: int = None):
+    patient = None
+    if patient_pk:
+        patient = get_object_or_404(Patient, pk=patient_pk)
     if request.method == "POST":
         form = PaymentForm(request.POST)
         if form.is_valid():
@@ -144,12 +155,16 @@ def payment_create(request, patient_pk: int = None):
         {
             "form": form,
             "title": "Add New Payment",
+            "patient": patient,
         },
     )
 
 
 @login_required
 def visit_create(request, patient_pk: int = None):
+    patient = None
+    if patient_pk:
+        patient = get_object_or_404(Patient, pk=patient_pk)
     if request.method == "POST":
         form = VisitForm(request.POST)
         if form.is_valid():
@@ -168,12 +183,16 @@ def visit_create(request, patient_pk: int = None):
         {
             "form": form,
             "title": "Add New Visit",
+            "patient": patient,
         },
     )
 
 
 @login_required
 def xray_create(request, patient_pk: int = None):
+    patient = None
+    if patient_pk:
+        patient = get_object_or_404(Patient, pk=patient_pk)
     if request.method == "POST":
         form = XRayForm(request.POST, request.FILES)
         if form.is_valid():
@@ -192,6 +211,7 @@ def xray_create(request, patient_pk: int = None):
         {
             "form": form,
             "title": "Add New X-Ray",
+            "patient": patient,
         },
     )
 
@@ -233,6 +253,9 @@ def appointment_list(request):
 
 @login_required
 def appointment_create(request, patient_pk: int = None):
+    patient = None
+    if patient_pk:
+        patient = get_object_or_404(Patient, pk=patient_pk)
     if request.method == "POST":
         form = AppointmentForm(request.POST)
         if form.is_valid():
@@ -250,7 +273,11 @@ def appointment_create(request, patient_pk: int = None):
     return render(
         request,
         "patients/appointment_form.html",
-        {"form": form, "title": "Schedule Appointment"},
+        {
+            "form": form,
+            "title": "Schedule Appointment",
+            "patient": patient,
+        },
     )
 
 
@@ -307,7 +334,26 @@ def treatment_plan_list(request):
 
 
 @login_required
+def treatment_plan_detail(request, pk: int):
+    treatment_plan = get_object_or_404(
+        TreatmentPlan.objects.select_related("patient"), pk=pk
+    )
+    procedures = treatment_plan.procedures.all().order_by("-date_performed")
+    return render(
+        request,
+        "patients/treatment_plan_detail.html",
+        {
+            "treatment_plan": treatment_plan,
+            "procedures": procedures,
+        },
+    )
+
+
+@login_required
 def treatment_plan_create(request, patient_pk: int = None):
+    patient = None
+    if patient_pk:
+        patient = get_object_or_404(Patient, pk=patient_pk)
     if request.method == "POST":
         form = TreatmentPlanForm(request.POST)
         if form.is_valid():
@@ -325,7 +371,11 @@ def treatment_plan_create(request, patient_pk: int = None):
     return render(
         request,
         "patients/treatment_plan_form.html",
-        {"form": form, "title": "Create Treatment Plan"},
+        {
+            "form": form,
+            "title": "Create Treatment Plan",
+            "patient": patient,
+        },
     )
 
 
@@ -371,6 +421,9 @@ def treatment_plan_delete(request, pk: int):
 
 @login_required
 def procedure_create(request, treatment_plan_pk: int = None):
+    treatment_plan = None
+    if treatment_plan_pk:
+        treatment_plan = get_object_or_404(TreatmentPlan, pk=treatment_plan_pk)
     if request.method == "POST":
         form = ProcedureForm(request.POST)
         if form.is_valid():
@@ -390,7 +443,11 @@ def procedure_create(request, treatment_plan_pk: int = None):
     return render(
         request,
         "patients/procedure_form.html",
-        {"form": form, "title": "Add Procedure"},
+        {
+            "form": form,
+            "title": "Add Procedure",
+            "treatment_plan": treatment_plan,
+        },
     )
 
 

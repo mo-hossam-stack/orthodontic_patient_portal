@@ -53,6 +53,11 @@ urlpatterns = [
     # Treatment Plan URLs
     path("treatment-plans/", views.treatment_plan_list, name="treatment_plan_list"),
     path(
+        "treatment-plans/<int:pk>/",
+        views.treatment_plan_detail,
+        name="treatment_plan_detail",
+    ),
+    path(
         "treatment-plans/new/",
         views.treatment_plan_create,
         name="treatment_plan_create",
