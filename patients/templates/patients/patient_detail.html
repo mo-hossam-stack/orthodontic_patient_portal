@@ -59,6 +59,12 @@
                         <a class="btn btn-warning btn-sm" href="{% url 'patient_payment_create' patient.pk %}">
                             <i class="bi bi-credit-card"></i> Add Payment
                         </a>
+                        <a class="btn btn-primary btn-sm" href="{% url 'patient_appointment_create' patient.pk %}">
+                            <i class="bi bi-calendar-check"></i> Schedule Appointment
+                        </a>
+                        <a class="btn btn-secondary btn-sm" href="{% url 'patient_treatment_plan_create' patient.pk %}">
+                            <i class="bi bi-clipboard-pulse"></i> Create Treatment Plan
+                        </a>
                     </div>
                 </div>
             </div>
@@ -80,6 +86,16 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="xray-tab" data-bs-toggle="tab" data-bs-target="#xray" type="button" role="tab">
                         <i class="bi bi-image"></i> X-Rays ({{ xrays.count }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab">
+                        <i class="bi bi-calendar-event"></i> Appointments ({{ appointments.count }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="treatment-plans-tab" data-bs-toggle="tab" data-bs-target="#treatment-plans" type="button" role="tab">
+                        <i class="bi bi-clipboard-pulse"></i> Treatment Plans ({{ treatment_plans.count }})
                     </button>
                 </li>
             </ul>
@@ -106,10 +122,18 @@
                                         {% if visit.payment_this_visit > 0 %}
                                             <span class="badge bg-success">Payment: ${{ visit.payment_this_visit|floatformat:2 }}</span>
                                         {% endif %}
+                                        {% if visit.xray %}
+                                            <span class="badge bg-info">Has X-Ray</span>
+                                        {% endif %}
                                     </div>
-                                    {% if visit.xray %}
-                                        <span class="badge bg-info">Has X-Ray</span>
-                                    {% endif %}
+                                    <div class="d-flex gap-1">
+                                        <a href="{% url 'visit_edit' visit.pk %}" class="btn btn-sm btn-outline-primary" title="Edit Visit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'visit_delete' visit.pk %}" class="btn btn-sm btn-outline-danger" title="Delete Visit">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             {% endfor %}
@@ -150,7 +174,15 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <small class="text-muted">{{ payment.last_update|date:"M d, Y" }}</small>
+                                    <div class="d-flex gap-1">
+                                        <small class="text-muted me-2">{{ payment.last_update|date:"M d, Y" }}</small>
+                                        <a href="{% url 'payment_edit' payment.pk %}" class="btn btn-sm btn-outline-primary" title="Edit Payment">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'payment_delete' payment.pk %}" class="btn btn-sm btn-outline-danger" title="Delete Payment">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             {% endfor %}
@@ -179,7 +211,12 @@
                                 <div class="card">
                                     <img src="{{ xray.image.url }}" class="card-img-top" alt="X-Ray {{ xray.id }}" style="object-fit:cover;height:180px;">
                                     <div class="card-body small">
-                                        <div class="text-muted">Added: {{ xray.date_added|date:"M d, Y" }}</div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="text-muted">Added: {{ xray.date_added|date:"M d, Y" }}</div>
+                                            <a href="{% url 'xray_delete' xray.pk %}" class="btn btn-sm btn-outline-danger" title="Delete X-Ray">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -190,6 +227,134 @@
                             <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
                             <p class="text-muted mt-2">No X-ray images uploaded yet.</p>
                             <a class="btn btn-primary" href="{% url 'patient_xray_create' patient.pk %}">Upload First X-Ray</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Appointments Tab -->
+                <div class="tab-pane fade" id="appointments" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Appointments</h5>
+                        <a class="btn btn-primary btn-sm" href="{% url 'patient_appointment_create' patient.pk %}">
+                            <i class="bi bi-plus"></i> Schedule Appointment
+                        </a>
+                    </div>
+                    {% if appointments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Status</th>
+                                        <th>Notes</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in appointments %}
+                                    <tr>
+                                        <td>
+                                            {{ appointment.datetime_start|date:"M d, Y h:i A" }}
+                                            {% if appointment.datetime_end %}
+                                                - {{ appointment.datetime_end|time:"h:i A" }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if appointment.status == 'scheduled' %}
+                                                <span class="badge bg-primary">Scheduled</span>
+                                            {% elif appointment.status == 'completed' %}
+                                                <span class="badge bg-success">Completed</span>
+                                            {% elif appointment.status == 'cancelled' %}
+                                                <span class="badge bg-secondary">Cancelled</span>
+                                            {% elif appointment.status == 'no_show' %}
+                                                <span class="badge bg-danger">No Show</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ appointment.notes|truncatechars:40 }}</td>
+                                        <td>
+                                            <div class="d-flex gap-1">
+                                                <a href="{% url 'appointment_edit' appointment.pk %}" class="btn btn-sm btn-outline-primary" title="Edit Appointment">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'appointment_delete' appointment.pk %}" class="btn btn-sm btn-outline-danger" title="Cancel Appointment">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-calendar-event text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2">No appointments scheduled.</p>
+                            <a class="btn btn-primary" href="{% url 'patient_appointment_create' patient.pk %}">Schedule First Appointment</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Treatment Plans Tab -->
+                <div class="tab-pane fade" id="treatment-plans" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Treatment Plans</h5>
+                        <a class="btn btn-secondary btn-sm" href="{% url 'patient_treatment_plan_create' patient.pk %}">
+                            <i class="bi bi-plus"></i> Create Treatment Plan
+                        </a>
+                    </div>
+                    {% if treatment_plans %}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Start Date</th>
+                                        <th>Expected End</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for plan in treatment_plans %}
+                                    <tr>
+                                        <td>{{ plan.title }}</td>
+                                        <td>
+                                            {% if plan.status == 'planned' %}
+                                                <span class="badge bg-info">Planned</span>
+                                            {% elif plan.status == 'in_progress' %}
+                                                <span class="badge bg-primary">In Progress</span>
+                                            {% elif plan.status == 'completed' %}
+                                                <span class="badge bg-success">Completed</span>
+                                            {% elif plan.status == 'cancelled' %}
+                                                <span class="badge bg-secondary">Cancelled</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ plan.start_date|default:"-" }}</td>
+                                        <td>{{ plan.expected_end_date|default:"-" }}</td>
+                                        <td>
+                                            <div class="d-flex gap-1">
+                                                <a href="{% url 'treatment_plan_detail' plan.pk %}" class="btn btn-sm btn-outline-info" title="View Plan">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{% url 'treatment_plan_edit' plan.pk %}" class="btn btn-sm btn-outline-primary" title="Edit Plan">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'treatment_plan_delete' plan.pk %}" class="btn btn-sm btn-outline-danger" title="Delete Plan">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-clipboard-pulse text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2">No treatment plans created yet.</p>
+                            <a class="btn btn-primary" href="{% url 'patient_treatment_plan_create' patient.pk %}">Create First Treatment Plan</a>
                         </div>
                     {% endif %}
                 </div>
