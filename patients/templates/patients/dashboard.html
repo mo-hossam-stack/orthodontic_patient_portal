@@ -11,8 +11,16 @@
 {% block content %}
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <h1 class="h3 m-0">Patients</h1>
-        <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-success" href="{% url 'patient_create' %}">Add Patient</a>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a class="btn btn-outline-primary" href="{% url 'appointment_list' %}">
+                <i class="bi bi-calendar-check"></i> Appointments
+            </a>
+            <a class="btn btn-outline-primary" href="{% url 'treatment_plan_list' %}">
+                <i class="bi bi-clipboard-pulse"></i> Treatment Plans
+            </a>
+            <a class="btn btn-success" href="{% url 'patient_create' %}">
+                <i class="bi bi-person-plus"></i> Add Patient
+            </a>
             <form class="d-flex" method="get">
                 <input class="form-control me-2" type="search" name="q" placeholder="Search by name or phone" value="{{ query }}">
                 <button class="btn btn-primary" type="submit">Search</button>
