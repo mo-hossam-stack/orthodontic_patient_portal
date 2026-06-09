@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Treatment Plan - {{ treatment_plan.title }}{% endblock %}
+
+{% block navbar_actions %}
+    <a class="btn btn-outline-light" href="{% url 'treatment_plan_edit' treatment_plan.pk %}">
+        <i class="bi bi-pencil"></i> Edit Plan
+    </a>
+    <a class="btn btn-outline-danger" href="{% url 'treatment_plan_delete' treatment_plan.pk %}">
+        <i class="bi bi-trash"></i> Delete Plan
+    </a>
+{% endblock %}
+
+{% block content %}
+    <a href="{% url 'treatment_plan_list' %}" class="btn btn-link">← Back to Treatment Plans</a>
+
+    <div class="row g-4 mt-2">
+        <!-- Plan Info Card -->
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-clipboard-pulse text-primary" style="font-size: 2rem;"></i>
+                        <div>
+                            <h4 class="h5 mb-0">{{ treatment_plan.title }}</h4>
+                            <small class="text-muted">
+                                <a href="{% url 'patient_detail' treatment_plan.patient.pk %}">
+                                    {{ treatment_plan.patient.name }}
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {% if treatment_plan.status == 'planned' %}
+                            <span class="badge bg-info fs-6">Planned</span>
+                        {% elif treatment_plan.status == 'in_progress' %}
+                            <span class="badge bg-primary fs-6">In Progress</span>
+                        {% elif treatment_plan.status == 'completed' %}
+                            <span class="badge bg-success fs-6">Completed</span>
+                        {% elif treatment_plan.status == 'cancelled' %}
+                            <span class="badge bg-secondary fs-6">Cancelled</span>
+                        {% endif %}
+                    </div>
+
+                    {% if treatment_plan.description %}
+                        <p class="text-muted">{{ treatment_plan.description|linebreaks }}</p>
+                    {% endif %}
+
+                    <ul class="list-unstyled small text-muted">
+                        <li><i class="bi bi-calendar"></i> Start: {{ treatment_plan.start_date|default:"Not set" }}</li>
+                        <li><i class="bi bi-calendar-check"></i> Expected End: {{ treatment_plan.expected_end_date|default:"Not set" }}</li>
+                        {% if treatment_plan.actual_end_date %}
+                            <li><i class="bi bi-check-circle"></i> Actual End: {{ treatment_plan.actual_end_date }}</li>
+                        {% endif %}
+                        <li><i class="bi bi-gear"></i> Procedures: {{ procedures.count }}</li>
+                    </ul>
+
+                    <div class="mt-3 d-grid gap-2">
+                        <a class="btn btn-success btn-sm" href="{% url 'treatment_plan_procedure_create' treatment_plan.pk %}">
+                            <i class="bi bi-plus-circle"></i> Add Procedure
+                        </a>
+                        <a class="btn btn-outline-primary btn-sm" href="{% url 'patient_detail' treatment_plan.patient.pk %}">
+                            <i class="bi bi-person"></i> View Patient Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Procedures List -->
+        <div class="col-12 col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Procedures</h5>
+                <a class="btn btn-success btn-sm" href="{% url 'treatment_plan_procedure_create' treatment_plan.pk %}">
+                    <i class="bi bi-plus"></i> Add Procedure
+                </a>
+            </div>
+
+            {% if procedures %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Procedure Name</th>
+                                <th>Date Performed</th>
+                                <th>Cost</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for procedure in procedures %}
+                            <tr>
+                                <td>
+                                    <strong>{{ procedure.name }}</strong>
+                                    {% if procedure.description %}
+                                        <br><small class="text-muted">{{ procedure.description|truncatechars:60 }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ procedure.date_performed|default:"-" }}</td>
+                                <td>${{ procedure.cost|floatformat:2 }}</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="{% url 'procedure_edit' procedure.pk %}" class="btn btn-sm btn-outline-primary" title="Edit Procedure">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'procedure_delete' procedure.pk %}" class="btn btn-sm btn-outline-danger" title="Delete Procedure">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5 bg-white border rounded">
+                    <i class="bi bi-tools text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2">No procedures added to this treatment plan yet.</p>
+                    <a class="btn btn-primary" href="{% url 'treatment_plan_procedure_create' treatment_plan.pk %}">Add First Procedure</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

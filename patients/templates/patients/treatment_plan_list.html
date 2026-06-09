@@ -53,12 +53,17 @@
                                     <td>{{ plan.start_date|default:"-" }}</td>
                                     <td>{{ plan.expected_end_date|default:"-" }}</td>
                                     <td>
-                                        <a href="{% url 'treatment_plan_edit' plan.pk %}" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i> Edit
-                                        </a>
-                                        <a href="{% url 'treatment_plan_delete' plan.pk %}" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </a>
+                                        <div class="d-flex gap-1">
+                                            <a href="{% url 'treatment_plan_detail' plan.pk %}" class="btn btn-sm btn-outline-info" title="View Plan">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'treatment_plan_edit' plan.pk %}" class="btn btn-sm btn-outline-primary" title="Edit Plan">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'treatment_plan_delete' plan.pk %}" class="btn btn-sm btn-outline-danger" title="Delete Plan">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             {% endfor %}
