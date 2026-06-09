@@ -20,16 +20,38 @@
             <a class="navbar-brand" href="{% url 'dashboard' %}">
                 <i class="bi bi-tooth"></i> Dental PMS
             </a>
-            <div class="d-flex gap-2">
-                {% block navbar_actions %}{% endblock %}
-                {% if user.is_authenticated %}
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-light">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </form>
-                {% endif %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'appointment_list' %}">
+                            <i class="bi bi-calendar-check"></i> Appointments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'treatment_plan_list' %}">
+                            <i class="bi bi-clipboard-pulse"></i> Treatment Plans
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex gap-2">
+                    {% block navbar_actions %}{% endblock %}
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-light">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
