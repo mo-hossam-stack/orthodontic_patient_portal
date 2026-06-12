@@ -1,71 +1,219 @@
-{% extends "base_auth.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Orthodontic Patient Portal</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;color:#0f172a;-webkit-font-smoothing:antialiased}
 
-{% block title %}Login - Dental PMS{% endblock %}
+.auth-wrap{display:flex;min-height:100vh}
 
-{% block auth_content %}
-    <div class="card shadow">
-        <div class="card-body p-5">
-            <div class="text-center mb-4">
-                <i class="bi bi-tooth text-primary" style="font-size: 3rem;"></i>
-                <h2 class="mt-3 mb-1">Dental PMS</h2>
-                <p class="text-muted">Sign in to your account</p>
-            </div>
+.auth-brand{
+  flex:0 0 55%;
+  background:linear-gradient(135deg,#0d6efd,#1d4ed8,#2563eb);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;padding:3rem
+}
+.auth-brand::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 30%,rgba(255,255,255,.12),transparent 50%),
+             radial-gradient(ellipse at 80% 70%,rgba(59,130,246,.25),transparent 50%);
+  pointer-events:none
+}
+.auth-brand::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.06) 1px,transparent 0);
+  background-size:24px 24px;pointer-events:none
+}
 
-            {% if form.errors %}
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Your username and password didn't match. Please try again.
-                </div>
-            {% endif %}
+.auth-orb{
+  position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none
+}
+.auth-orb--1{width:500px;height:500px;background:rgba(59,130,246,.2);top:-120px;right:-80px;animation:floatA 16s ease-in-out infinite alternate}
+.auth-orb--2{width:400px;height:400px;background:rgba(29,78,216,.25);bottom:-100px;left:-60px;animation:floatB 20s ease-in-out infinite alternate-reverse}
+.auth-orb--3{width:250px;height:250px;background:rgba(255,255,255,.08);top:55%;left:20%;animation:floatC 12s ease-in-out infinite alternate}
 
-            {% if next %}
-                {% if user.is_authenticated %}
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Your account doesn't have access to this page. To proceed, please login with an account that has access.
-                    </div>
-                {% else %}
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
-                        Please login to see this page.
-                    </div>
-                {% endif %}
-            {% endif %}
+@keyframes floatA{0%{transform:translate(0,0) scale(1)}100%{transform:translate(50px,-30px) scale(1.12)}}
+@keyframes floatB{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-40px,20px) scale(1.08)}}
+@keyframes floatC{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,-20px) scale(1.15)}}
 
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="id_username" class="form-label">Username</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-person"></i>
-                        </span>
-                        <input type="text" name="username" class="form-control" id="id_username" required>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label for="id_password" class="form-label">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-lock"></i>
-                        </span>
-                        <input type="password" name="password" class="form-control" id="id_password" required>
-                    </div>
-                </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-box-arrow-in-right"></i> Sign In
-                    </button>
-                </div>
-                <input type="hidden" name="next" value="{{ next }}">
-            </form>
+.brand-inner{position:relative;z-index:2;text-align:center;max-width:480px}
+.brand-inner svg{width:240px;height:auto;margin:0 auto 1.5rem}
 
-            <div class="text-center mt-4">
-                <small class="text-muted">
-                    <i class="bi bi-shield-check"></i>
-                    Secure login for authorized personnel only
-                </small>
-            </div>
-        </div>
+.auth-form{
+  flex:0 0 45%;
+  background:#f8fafc;
+  display:flex;align-items:center;justify-content:center;padding:2rem
+}
+
+.auth-card{
+  width:100%;max-width:400px;
+  background:#fff;border-radius:20px;padding:2.5rem 2rem;
+  box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(13,110,253,.06),0 12px 48px rgba(13,110,253,.08);
+  position:relative
+}
+.auth-card::before{
+  content:'';position:absolute;top:0;left:2rem;right:2rem;height:3px;
+  background:linear-gradient(90deg,#0d6efd,#3b82f6);border-radius:0 0 4px 4px
+}
+.auth-card .icon-box{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,#dbeafe,#eff6ff);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.25rem;font-size:1.4rem;color:#0d6efd
+}
+
+.form-control-custom{
+  display:flex;align-items:center;
+  background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;transition:all .2s;overflow:hidden
+}
+.form-control-custom:focus-within{border-color:#0d6efd;box-shadow:0 0 0 3px rgba(13,110,253,.12)}
+.form-control-custom .input-icon{padding:.65rem 0 .65rem .9rem;color:#94a3b8;font-size:1rem;line-height:1;flex:none}
+.form-control-custom input{
+  flex:1;border:none;background:transparent;
+  padding:.65rem .75rem .65rem .4rem;font-size:.9rem;color:#0f172a;outline:none;font-family:inherit
+}
+.form-control-custom input::placeholder{color:#94a3b8}
+
+.btn-auth{
+  width:100%;border:none;border-radius:10px;padding:.8rem 1.5rem;
+  font-size:.9rem;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,#0d6efd,#2563eb);
+  cursor:pointer;transition:all .25s;font-family:inherit
+}
+.btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,110,253,.3)}
+.btn-auth:active{transform:translateY(0)}
+.btn-auth i{margin-right:.5rem}
+
+.alert-box{border-radius:10px;padding:.7rem .9rem;font-size:.8rem;margin-bottom:1rem;border:1px solid}
+
+@media(max-width:991px){
+  .auth-brand{flex:0 0 50%}
+  .auth-form{flex:0 0 50%}
+  .brand-inner svg{width:180px}
+}
+@media(max-width:767px){
+  .auth-wrap{flex-direction:column}
+  .auth-brand{flex:none;min-height:30vh;padding:2rem 1.5rem}
+  .brand-inner svg{width:120px;margin-bottom:.75rem}
+  .brand-inner .features{display:none}
+  .auth-form{flex:none;padding:1.5rem;padding-top:2rem}
+  .auth-card{padding:2rem 1.25rem}
+}
+@media(max-width:480px){
+  .auth-brand{min-height:25vh;padding:1.5rem}
+  .brand-inner svg{width:85px}
+  .auth-card{padding:1.5rem 1rem}
+}
+</style>
+</head>
+<body>
+<div class="auth-wrap">
+  <!-- Brand Panel -->
+  <div class="auth-brand">
+    <div class="auth-orb auth-orb--1"></div>
+    <div class="auth-orb auth-orb--2"></div>
+    <div class="auth-orb auth-orb--3"></div>
+    <div class="brand-inner">
+      <svg viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fff" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#bfdbfe" stop-opacity=".8"/>
+          </linearGradient>
+          <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#60a5fa" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity=".2"/>
+          </linearGradient>
+        </defs>
+        <circle cx="120" cy="100" r="88" stroke="rgba(255,255,255,.08)" stroke-width="1.5" fill="none"/>
+        <circle cx="120" cy="100" r="75" stroke="rgba(255,255,255,.05)" stroke-width="1" fill="none"/>
+        <path d="M55 80 Q80 55 100 60" stroke="url(#g2)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/>
+        <path d="M185 70 Q200 95 195 115" stroke="url(#g2)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".4"/>
+        <path d="M50 130 Q70 145 95 140" stroke="url(#g2)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".5"/>
+        <circle cx="48" cy="72" r="4" fill="rgba(255,255,255,.15)"/>
+        <circle cx="192" cy="58" r="3" fill="rgba(255,255,255,.12)"/>
+        <circle cx="55" cy="145" r="3.5" fill="rgba(255,255,255,.1)"/>
+        <circle cx="190" cy="140" r="4" fill="rgba(255,255,255,.08)"/>
+        <path d="M120 32 L168 55 L168 108 C168 138 120 168 120 168 C120 168 72 138 72 108 L72 55 Z" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.2)" stroke-width="1.5"/>
+        <path d="M120 52 C142 52 155 62 158 80 C160 92 157 105 150 116 C144 125 138 135 135 145 C132 152 128 158 120 158 C112 158 108 152 105 145 C102 135 96 125 90 116 C83 105 80 92 82 80 C85 62 98 52 120 52Z" fill="url(#g1)" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+        <path d="M108 148 C110 155 112 160 120 160 C128 160 130 155 132 148" stroke="rgba(255,255,255,.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M102 140 C104 150 108 158 120 158 C132 158 136 150 138 140" stroke="rgba(255,255,255,.12)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M105 70 C112 65 128 65 135 70" stroke="rgba(255,255,255,.4)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M120 88 L120 108 M110 98 L130 98" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>
+        <circle cx="98" cy="78" r="2.5" fill="rgba(96,165,250,.4)"/>
+        <circle cx="142" cy="82" r="2" fill="rgba(96,165,250,.3)"/>
+        <circle cx="130" cy="120" r="2" fill="rgba(96,165,250,.25)"/>
+        <path d="M72 168 Q96 174 120 168 Q144 162 168 168" stroke="rgba(255,255,255,.08)" stroke-width="1" fill="none"/>
+      </svg>
+
+      <h2 class="text-white fw-bold" style="font-size:clamp(1.3rem,3vw,2rem);letter-spacing:-.02em">Orthodontic<br>Patient Portal</h2>
+      <p class="text-white-50 mb-0 mx-auto" style="max-width:360px;font-size:clamp(.85rem,1.3vw,1rem);line-height:1.6">
+        Manage patients, appointments, and treatment plans all in one place.
+      </p>
+      <div class="d-flex justify-content-center gap-4 mt-4 features flex-wrap">
+        <span class="text-white-50" style="font-size:.8rem"><i class="bi bi-calendar-check me-1"></i>Appointments</span>
+        <span class="text-white-50" style="font-size:.8rem"><i class="bi bi-people me-1"></i>Patients</span>
+        <span class="text-white-50" style="font-size:.8rem"><i class="bi bi-clipboard-pulse me-1"></i>Treatments</span>
+      </div>
     </div>
-{% endblock %}
+  </div>
+
+  <div class="auth-form">
+    <div class="auth-card">
+      <h2 class="fw-bold" style="font-size:1.3rem;letter-spacing:-.01em">Welcome back</h2>
+      <p class="text-secondary mb-4" style="font-size:.85rem">Sign in to manage your practice</p>
+
+      {% if form.errors %}
+        <div class="alert-box" style="background:#fef2f2;border-color:#fecaca;color:#991b1b">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i>Invalid username or password.
+        </div>
+      {% endif %}
+      {% if next %}
+        {% if user.is_authenticated %}
+          <div class="alert-box" style="background:#fffbeb;border-color:#fde68a;color:#92400e">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>Your account doesn't have access.
+          </div>
+        {% else %}
+          <div class="alert-box" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af">
+            <i class="bi bi-info-circle-fill me-1"></i>Please sign in to continue.
+          </div>
+        {% endif %}
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_username" class="form-label fw-semibold text-secondary" style="font-size:.8rem">Username</label>
+          <div class="form-control-custom">
+            <span class="input-icon"><i class="bi bi-person"></i></span>
+            <input type="text" name="username" id="id_username" placeholder="Enter your username" required autofocus>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="id_password" class="form-label fw-semibold text-secondary" style="font-size:.8rem">Password</label>
+          <div class="form-control-custom">
+            <span class="input-icon"><i class="bi bi-lock"></i></span>
+            <input type="password" name="password" id="id_password" placeholder="Enter your password" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-auth"><i class="bi bi-box-arrow-in-right"></i>Sign In</button>
+        <input type="hidden" name="next" value="{{ next }}">
+      </form>
+
+      <div class="text-center mt-4 text-secondary" style="font-size:.75rem">
+        <i class="bi bi-shield-check me-1"></i>Secure login for authorized personnel
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
