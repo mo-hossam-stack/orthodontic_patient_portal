@@ -1,5 +1,16 @@
 #  Clinic Management System (CMS)
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django 5.2" />
+  <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.12+" />
+  <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap 5.3" />
+  <img src="https://img.shields.io/badge/PostgreSQL-14+-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL 14+" />
+  <img src="https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" />
+  <img src="https://img.shields.io/badge/Pillow-11.3-23354D?style=for-the-badge&logo=pillow&logoColor=white" alt="Pillow" />
+  <img src="https://img.shields.io/badge/pytest-7.4-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white" alt="pytest" />
+  <img src="https://img.shields.io/badge/uv-Package%20Manager-4B32C3?style=for-the-badge&logo=uv&logoColor=white" alt="uv" />
+</p>
+
 A comprehensive web-based dental practice management system built with Django that helps dental professionals manage patients, appointments, payments, and medical records efficiently.
 ##  Features
 
